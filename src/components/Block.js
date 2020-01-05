@@ -81,7 +81,7 @@ export default class Block extends Component {
           }
         case 3:
           return {
-            paddingTop: padding[0],
+            paddingTop: padding[1],
             paddingRight: padding[1],
             paddingBottom: padding[2],
             paddingLeft: padding[1],
