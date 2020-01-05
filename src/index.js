@@ -1,12 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './cyborg-bootstrap.css';
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import AppRouter, { history } from './routes/AppRouter';
+import registerServiceWorker from './registerServiceWorker';
+import { firebase } from './firebase/firebase';
+import { Loading } from './components/Loading/Loading';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// export const login = (uid) => (
+//   console.log(uid)
+// )
+// export const logout = () => (
+//   console.log(false)
+// )
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const loggedIn = (uid) => {
+  if(uid){
+  return !!uid
+}
+}
+
+
+
+let rendered = false;
+
+const renderApp = () => {
+  if(!rendered){
+    ReactDOM.render(<AppRouter auth={loggedIn}/>, document.getElementById('root'));
+    rendered = true;
+  }
+}
+
+ReactDOM.render(<Loading/>, document.getElementById('root'));
+
+firebase.auth().onAuthStateChanged((user) => {
+    if(user) {
+      //loggedIn(user.uid)
+      //console.log('uid', user.uid, "loggedIn");
+      renderApp();
+      if (history.location.pathname === '/') {
+        history.push('/exercise-log');
+      }
+    } else {
+      renderApp();
+      history.push(`/`)
+    }
+});
+
+registerServiceWorker();
